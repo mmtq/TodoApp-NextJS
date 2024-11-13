@@ -2,7 +2,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import Modal from '../components/Modal';
-
+import Toast from '../components/Toast';
 interface todos {
     id: number;
     title: string;
@@ -16,7 +16,19 @@ const Todo = () => {
     const [editedTitle, setEditedTitle] = useState<string>('');
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [todoToDelete, setTodoToDelete] = useState<todos | null>(null);
+    const [toastMessage, setToastMessage] = useState<string>('');
+    const [isToastVisible, setIsToastVisible] = useState<boolean>(false);
 
+    useEffect(() => {
+        const storedTodos = localStorage.getItem('todos');
+        if (storedTodos) {
+            setTodos(JSON.parse(storedTodos));
+        }
+    }, [])
+
+    useEffect(() => {
+        localStorage.setItem('todos', JSON.stringify(todos));
+    }, [todos]);
 
     const addTodo = () => {
         if (!todoName) return
@@ -40,7 +52,10 @@ const Todo = () => {
             setTodos(newTodos);
             setDeleteModalOpen(false);
             setTodoToDelete(null);
+            setToastMessage(`"${todoToDelete.title}" deleted successfully!`);
+            setIsToastVisible(true);
         }
+
     }
     const changeTodoStatus = (id: number) => {
         const newTodos = todos.map((todo) => {
@@ -71,9 +86,12 @@ const Todo = () => {
             setEditedTitle('');
         }
     }
+    const closeToast = () => {
+        setIsToastVisible(false);
+    };
 
     return (
-        <div className="h-[100vh] w-full flex flex-col items-center p-8 bg-gray-900 text-gray-100">
+        <div className="h-[90vh] w-full flex flex-col items-center p-8 bg-gray-900 text-gray-100">
             {/* Input section */}
             <div className="w-full max-w-md mb-8 flex items-center">
                 <input type='text'
@@ -90,9 +108,8 @@ const Todo = () => {
                     +
                 </button>
             </div>
-
             {/* Todo list section */}
-            <div className="w-full max-w-md space-y-4">
+            <div className="w-full max-w-4xl space-y-4">
                 {todos.slice().reverse().map((todo) => (
                     <div
                         className="flex justify-between items-center p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-md"
@@ -123,35 +140,38 @@ const Todo = () => {
                         >
                             Delete
                         </button>
-                        <Modal
-                            isOpen={isModalOpen}
-                            title="Edit Todo"
-                            onClose={() => setIsModalOpen(false)}
-                            onSave={saveEditedTodo}
-                            yes = "Save"
-                            no = "Cancel"
-                        >
-                            <input
-                                type="text"
-                                value={editedTitle}
-                                onChange={(e) => setEditedTitle(e.target.value)}
-                                className="w-full p-2 bg-gray-700 text-gray-100 border-2 border-gray-600 rounded-lg focus:outline-none focus:border-violet-500"
-                            />
-                        </Modal>
-                        <Modal
-                            isOpen={isDeleteModalOpen}
-                            title="Confirm Deletion"
-                            onClose={() => setDeleteModalOpen(false)}
-                            onSave={() => deleteTodo()}
-                            yes = "Delete"
-                            no = "Cancel"
-                        >
-                            <p className="text-gray-300 mb-4">
-                                Are you sure you want to delete the todo "{todoToDelete?.title}"?
-                            </p>
-                        </Modal>
+
                     </div>
                 ))}
+                {isToastVisible && <Toast message={toastMessage} onClose={closeToast} />}
+
+                <Modal
+                    isOpen={isModalOpen}
+                    title="Edit Todo"
+                    onClose={() => setIsModalOpen(false)}
+                    onSave={saveEditedTodo}
+                    yes="Save"
+                    no="Cancel"
+                >
+                    <input
+                        type="text"
+                        value={editedTitle}
+                        onChange={(e) => setEditedTitle(e.target.value)}
+                        className="w-full p-2 bg-gray-700 text-gray-100 border-2 border-gray-600 rounded-lg focus:outline-none focus:border-violet-500"
+                    />
+                </Modal>
+                <Modal
+                    isOpen={isDeleteModalOpen}
+                    title="Confirm Deletion"
+                    onClose={() => setDeleteModalOpen(false)}
+                    onSave={() => deleteTodo()}
+                    yes="Delete"
+                    no="Cancel"
+                >
+                    <p className="text-gray-300 mb-4">
+                        Are you sure you want to delete the todo "{todoToDelete?.title}"?
+                    </p>
+                </Modal>
             </div>
         </div>
 
