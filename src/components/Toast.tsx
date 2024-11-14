@@ -15,7 +15,7 @@ const Toast: React.FC<ToastProps> = ({ message, onClose }) => {
   }, [onClose]);
 
   return (
-    <div className="fixed top-12 right-8 p-4 bg-gray-800 text-white rounded-lg shadow-lg animate-fade">
+    <div className="fixed top-14 right-5 p-4 bg-gray-800 text-white rounded-lg shadow-lg animate-fade">
       <span>{message}</span>
       <button className="ml-4 text-gray-400 hover:text-white" onClick={onClose}>✖</button>
     </div>

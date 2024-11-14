@@ -3,6 +3,12 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import Modal from '../components/Modal';
 import Toast from '../components/Toast';
+import { CiEdit } from "react-icons/ci";
+import { MdDeleteOutline } from "react-icons/md";
+import { IoCheckmarkDoneCircleOutline } from "react-icons/io5";
+import { FaNotdef } from "react-icons/fa6";
+
+
 interface todos {
     id: number;
     title: string;
@@ -110,6 +116,9 @@ const Todo = () => {
             </div>
             {/* Todo list section */}
             <div className="w-full max-w-4xl space-y-4">
+                {/* if (!todos.length){
+                    <div className="text-lg text-center font-semibold text-gray-100">There is no task to do.</div>                    
+                } */}
                 {todos.slice().reverse().map((todo) => (
                     <div
                         className="flex justify-between items-center p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-md"
@@ -117,7 +126,7 @@ const Todo = () => {
                     >
                         <input
                             type="checkbox"
-                            className="w-6 h-6 text-violet-600 bg-gray-800 border-gray-700 rounded focus:ring-2 focus:ring-violet-500 focus:ring-offset-gray-900 transition-colors"
+                            className="w-4 h-4 text-violet-600 bg-gray-800 border-gray-700 rounded focus:ring-2 focus:ring-violet-500 focus:ring-offset-gray-900 transition-colors"
                             onClick={() => changeTodoStatus(todo.id)}
                         />
 
@@ -126,19 +135,19 @@ const Todo = () => {
                             className={`text-sm font-medium ${todo.completed ? "text-green-400" : "text-red-400"
                                 }`}
                         >
-                            {todo.completed ? "Completed" : "Not Completed"}
+                            {todo.completed ? "Done" : "Not done"}
                         </div>
                         <button
                             className="p-2 text-yellow-400 hover:text-yellow-500 transition-colors"
                             onClick={() => editTodo(todo)}
                         >
-                            Edit
+                            <CiEdit/>
                         </button>
                         <button
                             className="p-2 text-red-400 hover:text-red-500 transition-colors"
                             onClick={() => confirmDeleteTodo(todo)}
                         >
-                            Delete
+                            <MdDeleteOutline/>
                         </button>
 
                     </div>
